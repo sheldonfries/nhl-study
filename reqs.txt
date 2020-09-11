@@ -1,0 +1,8 @@
+numpy
+notebook
+jupyter_contrib_nbextensions
+jupyter_nbextensions_configurator
+sklearn
+pandas
+requests
+json
