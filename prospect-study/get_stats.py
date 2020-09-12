@@ -1,21 +1,49 @@
 import requests
 import json
 import pandas
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
 
 def getAge(date, draftYear):
-    date = date.split("-")
-    year = int(date[0])
-    #month = int(date[1])
-    #day = int(date[2])
-    age = int(draftYear) - year
-    
-    return age
+    draftDate = str(draftYear) + "-09-15"
+    date1 = parse(draftDate)
+    date2 = parse(date)
+    rdelta = relativedelta(date1, date2)
+    return rdelta.years
 
 def getPos(pos):
     if pos == 'D':
         return pos
     else:
         return 'F'
+    
+def fixLeagueName(league):
+    if league == "Czech":
+        return "CzRep"
+    elif league == "Czech2" or league == "Czech-2":
+        return "CzRep-2"
+    elif league == "Czech-Jr.":
+        return "CzRep-Jr."
+    elif league == "Liiga":
+        return "Finland"
+    elif league[0:4] == "High":
+        return "HS"
+    elif league == "KHL":
+        return "Russia"
+    elif league == "Big Ten" or league == "ECAC" or league == "H-East" or league == "NCHC" or league == "WCHA":
+        return "NCAA"
+    elif league == "NLA":
+        return "Swiss"
+    elif league == "Russia2":
+        return "Russia-2"
+    elif league == "Russia3":
+        return "Russia-3"
+    elif league == "SHL":
+        return "Sweden"
+    elif league == "SuperElit":
+        return "Sweden-2"
+    else:
+        return league
 
 # Import player ids from csv
 df = pandas.read_csv(r'historical_prospect_info.csv')
@@ -46,7 +74,7 @@ for id in player_ids:
             if season["season"] == draft_season:
                 data = season["stat"]
                 if "games" in data and "goals" in data and "assists" in data:
-                    row = {'PID': id, 'Name': df_name.loc[id, "name"], 'Pos': pos, 'Age': age, 'League': season["league"]["name"], 'GP': data["games"], 'G': data["goals"], 'A': data["assists"], 'P': data["goals"] + data["assists"], 'Year': year, 'Overall': df_name.loc[id, "overall"]}
+                    row = {'PID': id, 'Name': df_name.loc[id, "name"], 'Pos': pos, 'Age': age, 'League': fixLeagueName(season["league"]["name"]), 'GP': data["games"], 'G': data["goals"], 'A': data["assists"], 'P': data["goals"] + data["assists"], 'Year': year, 'Overall': df_name.loc[id, "overall"]}
                     df_out = df_out.append(row, ignore_index=True)
 
 df_out.to_csv(r'historical_prospect_stats.csv', sep=",", index=False)

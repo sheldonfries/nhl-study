@@ -58,9 +58,23 @@ Run the following code to generate the closest comparables for a given prospect.
 $ python3 calc.py [League] [Position] [Age] [Games Played] [Goals] [Assists]
 ```
 
+- Possible Leagues (check the csv files for a more exhaustive list):
+    - AHL
+    - OHL
+    - WHL
+    - QMJHL
+    - Czech(-2/3/Jr)
+    - Finland(-2/3/Jr)
+    - Russia(-2/3/Jr)
+    - Sweden(-2/3/Jr)
+    - Swiss(-2)
+    - NCAA
+- Possible Positions: F, D
+- Age: The prospect's age as of September 15 of the draft year (e.g. a 2020 draft eligible prospect's age would be their age on September 15, 2020).
+
 The script will output the five closest comparables based on the historical data. The number of comparables can be changed with the `NUM_PLAYERS_RETURNED` constant.
 
 ## Future Work
-- Do more cleaning of the data in get_info/get_stats to ensure that league names are correct and consistent, and to avoid providing comparables with low GP.
-- Use NHLe or a similar system to find best comparisons across leagues, rather than limiting comparables to the same league.
+- Improve NHLe factors for lower profile leagues.
+- Use age as a factor/multiplier rather than singling out players with the same age.
 - Use nearest neighbours to classify prospect (first line, etc.) rather than just providing comparables => requires labels for comparables

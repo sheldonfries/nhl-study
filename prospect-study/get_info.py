@@ -8,7 +8,7 @@ prospect_names = []
 prospect_draft_years = []
 prospect_overalls = []
 
-for i in range(1985, 2016):
+for i in range(1990, 2016):
     draft_data = requests.get(draft_url + str(i))
     draft_data = json.loads(draft_data.content)
     draft_data = draft_data["drafts"]
@@ -34,7 +34,7 @@ for id in prospect_ids:
 
     for prospect in prospect_data:
         prospect_positions.append(prospect["primaryPosition"]["code"])
-        #player_birth_years.append(prospect["birthDate"].split("-")[0])
+        #player_birth_dates.append(prospect["birthDate"].split("-")[0])
         player_birth_dates.append(prospect["birthDate"])
         if "nhlPlayerId" in prospect:
             player_ids.append(prospect["nhlPlayerId"])
