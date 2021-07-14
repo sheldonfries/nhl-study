@@ -5,5 +5,4 @@ jupyter_nbextensions_configurator
 sklearn
 pandas
 requests
-json
 python-dateutil
