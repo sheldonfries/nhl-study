@@ -4,6 +4,8 @@ import pandas
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
 
+NHL_ID = 133
+
 def getAge(date, draftYear):
     draftDate = str(draftYear) + "-09-15"
     date1 = parse(draftDate)
@@ -52,7 +54,7 @@ df = df[df.PID != 'None']
 df = df.drop_duplicates(subset=['PID'])
 player_ids = df['PID'].to_list()
 
-data = {'PID': [], 'Name': [], 'Pos': [], 'Age': [], 'League': [], 'GP': [], 'G': [], 'A': [], 'P': [], 'Year': [], 'Overall': []}
+data = {'PID': [], 'Name': [], 'Pos': [], 'Age': [], 'League': [], 'GP': [], 'G': [], 'A': [], 'P': [], 'Year': [], 'Overall': [], "Career GP": []}
 df_out = pandas.DataFrame(data)
 df_name = df.set_index("PID", drop = False)
 
@@ -63,6 +65,7 @@ for id in player_ids:
         dump = dump["stats"]
     else:
         continue
+    
     year = df_name.loc[id, "year"]
     birthdate = df_name.loc[id, "BirthDate"]
     age = getAge(birthdate, year)
@@ -71,10 +74,20 @@ for id in player_ids:
     for stat in dump:
         for season in stat["splits"]:
             draft_season = str(year - 1) + str(year)
+            #career_gp = 0
+            #row = {'PID': [], 'Name': [], 'Pos': [], 'Age': [], 'League': [], 'GP': [], 'G': [], 'A': [], 'P': [], 'Year': [], 'Overall': [], 'Career GP': 0}
             if season["season"] == draft_season:
                 data = season["stat"]
                 if "games" in data and "goals" in data and "assists" in data:
-                    row = {'PID': id, 'Name': df_name.loc[id, "name"], 'Pos': pos, 'Age': age, 'League': fixLeagueName(season["league"]["name"]), 'GP': data["games"], 'G': data["goals"], 'A': data["assists"], 'P': data["goals"] + data["assists"], 'Year': year, 'Overall': df_name.loc[id, "overall"]}
+                    row = {'PID': id, 'Name': df_name.loc[id, "name"], 'Pos': pos, 'Age': age, 'League': fixLeagueName(season["league"]["name"]), 'GP': data["games"], 'G': data["goals"], 'A': data["assists"], 'P': data["goals"] + data["assists"], 'Year': year, 'Overall': df_name.loc[id, "overall"], 'Career GP': 0}
                     df_out = df_out.append(row, ignore_index=True)
+                    
+            
+            #if "id" in season["league"]:
+                #if season["league"]["id"] == NHL_ID:
+                    #career_gp += season["stat"]["games"]
+            
+            #row["Career GP"] = career_gp
+            #df_out = df_out.append(row, ignore_index=True)
 
 df_out.to_csv(r'historical_prospect_stats.csv', sep=",", index=False)
